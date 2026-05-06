@@ -178,24 +178,97 @@
     .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
     .fi.on{opacity:1;transform:translateY(0)}
 
-    /* ── MOBILE ── */
+    /* ── HAMBURGER ── */
+    .hbg{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;padding:6px;cursor:pointer;z-index:101}
+    .hbg span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:transform .3s,opacity .3s,width .3s}
+    .hbg.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .hbg.open span:nth-child(2){opacity:0;width:14px}
+    .hbg.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+    /* ── TABLET (769–1024px) ── */
+    @media(min-width:769px) and (max-width:1024px){
+      .wrap{padding:80px 6%}
+      nav{padding:0 6%}
+      .hcnt{padding:0 6%}
+      .agrid{gap:2.5rem}
+      .hn1{font-size:clamp(4rem,10vw,7rem)}
+      .sgrid{grid-template-columns:repeat(3,1fr)}
+      .sgrid-wrap{padding:32px 6% 60px}
+      .skills-hd{padding:0 6%}
+      .jhdr{padding:60px 6% 0}
+      .jpanel{padding:120px 6% 60px}
+      #jout{height:450vh}
+      .pgrid{grid-template-columns:repeat(2,1fr)}
+    }
+
+    /* ── MOBILE (≤768px) ── */
     @media(max-width:768px){
       body{cursor:auto}
       #cd,#cr{display:none}
-      .wrap{padding:72px 6%}
-      nav,.hcnt,.scrollhint{padding-left:6%;padding-right:6%}
-      .agrid{grid-template-columns:1fr;gap:2.5rem}
+      /* nav */
+      nav{padding:0 5%}
+      .hbg{display:flex}
+      .nlinks{
+        position:fixed;top:60px;left:0;right:0;
+        flex-direction:column;gap:0;list-style:none;
+        background:rgba(245,242,234,.97);
+        backdrop-filter:blur(20px);
+        border-bottom:1px solid var(--border);
+        transform:translateY(-110%);
+        transition:transform .35s cubic-bezier(.23,1,.32,1);
+        z-index:99;padding:1rem 0;
+      }
+      .nlinks.open{transform:translateY(0)}
+      .nlinks li{border-bottom:1px solid var(--border)}
+      .nlinks li:last-child{border:none}
+      .nlinks a{display:block;padding:.875rem 5%;font-size:1rem;color:var(--text)}
+      .nlinks a::after{display:none}
+      /* hero */
+      .hcnt{padding:0 5%}
+      .scrollhint{padding-left:5%}
+      .hb1{width:260px;height:260px;top:5%;right:-60px}
+      .hb2{width:180px;height:180px;bottom:15%;right:10%}
+      .hb3{display:none}
+      /* about */
+      .wrap{padding:64px 5%}
       .awm{display:none}
+      .agrid{grid-template-columns:1fr;gap:2rem}
+      .spile{grid-template-columns:1fr 1fr;gap:.75rem}
       .scard:nth-child(2),.scard:nth-child(4){margin-top:0}
+      .scard{padding:1.25rem}
+      .snum{font-size:2rem}
+      /* skills */
+      .skills-hd{padding:0 5%}
+      .sgrid-wrap{padding:32px 5% 60px}
+      .sgrid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
+      /* journey — vertical fallback */
       #jout{height:auto}
-      #jsticky{position:relative;height:auto;overflow:visible}
-      .jhdr{position:relative;padding:72px 6% 0;flex-direction:column;gap:1rem}
-      #jtrack{position:relative;flex-direction:column;width:100%;transform:none!important}
-      .jpanel{width:100%;height:auto;padding:40px 6%}
+      #jsticky{position:relative;height:auto;overflow:visible;background:var(--bg)}
+      .jhdr{position:relative;padding:64px 5% 0;flex-direction:column;gap:.75rem}
+      .jprog{display:none}
+      #jtrack{position:relative;flex-direction:column;width:100%;transform:none!important;padding-top:2rem}
+      .jpanel{width:100%;height:auto;padding:32px 5%;border-bottom:1px solid var(--border)}
+      .jpanel:last-child{border:none}
       .jdeco{display:none}
       .jscroll-hint{display:none}
-      .nlinks{gap:1rem}
-      .nlinks a{font-size:.78rem}
+      .jnum{font-size:3rem}
+      .jco{font-size:1.2rem}
+      /* projects */
+      .pgrid{grid-template-columns:1fr}
+      /* contact */
+      #contact{padding:80px 5%}
+      .clinks{flex-direction:column;align-items:center}
+      /* footer */
+      .ft{flex-direction:column;gap:.5rem;text-align:center;padding:1.25rem 5%}
+    }
+
+    /* ── SMALL MOBILE (≤480px) ── */
+    @media(max-width:480px){
+      .hn1{font-size:clamp(3.5rem,18vw,5.5rem)}
+      .hn2{font-size:clamp(1.75rem,10vw,3rem)}
+      .spile{grid-template-columns:1fr}
+      .sgrid{grid-template-columns:1fr}
+      .ctitle{font-size:clamp(2rem,12vw,3.5rem)}
     }
   </style>
 </head>
@@ -207,7 +280,10 @@
 <!-- NAV -->
 <nav id="nav">
   <a href="#hero" class="nlogo">Jiaru<span>.</span></a>
-  <ul class="nlinks">
+  <button class="hbg" id="hbg" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nlinks" id="nlinks">
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#jout">Journey</a></li>
@@ -554,12 +630,23 @@ function cnt(el){ const T=+el.dataset.t,P=el.dataset.p||'',S=el.dataset.s||'',D=
 const cio=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){cnt(e.target);cio.unobserve(e.target);} }); },{threshold:.5});
 document.querySelectorAll('.snum[data-t]').forEach(el=>cio.observe(el));
 
-// ── 3D tilt on project cards ──
-document.querySelectorAll('.pc').forEach(c=>{
-  c.addEventListener('mouseenter',()=>c.style.transition='box-shadow .2s,border-color .2s');
-  c.addEventListener('mouseleave',()=>{ c.style.transition='transform .5s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .2s'; c.style.transform=''; });
-  c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/r.width,y=(e.clientY-r.top-r.height/2)/r.height; c.style.transform=`perspective(700px) rotateY(${x*10}deg) rotateX(${-y*8}deg) translateZ(10px)`; });
-});
+// ── 3D tilt on project cards (desktop only) ──
+const isTouch=()=>'ontouchstart' in window||navigator.maxTouchPoints>0;
+if(!isTouch()){
+  document.querySelectorAll('.pc').forEach(c=>{
+    c.addEventListener('mouseenter',()=>c.style.transition='box-shadow .2s,border-color .2s');
+    c.addEventListener('mouseleave',()=>{ c.style.transition='transform .5s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .2s'; c.style.transform=''; });
+    c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/r.width,y=(e.clientY-r.top-r.height/2)/r.height; c.style.transform=`perspective(700px) rotateY(${x*10}deg) rotateX(${-y*8}deg) translateZ(10px)`; });
+  });
+}
+
+// ── Hamburger menu ──
+const hbg=document.getElementById('hbg'), nl=document.getElementById('nlinks');
+hbg.addEventListener('click',()=>{ hbg.classList.toggle('open'); nl.classList.toggle('open'); });
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ hbg.classList.remove('open'); nl.classList.remove('open'); }));
+
+// ── Disable blob parallax on touch ──
+if(isTouch()) document.querySelectorAll('.hblob').forEach(b=>b.style.transition='none');
 </script>
 </body>
 </html>
