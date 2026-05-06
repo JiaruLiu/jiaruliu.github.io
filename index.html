@@ -98,7 +98,7 @@
     .apara strong{color:#002FA7;font-weight:400}
 
     /* ── SKILLS ── */
-    #skills{background:var(--bg);overflow:hidden;padding:56px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    #skills{background:var(--bg);overflow:hidden;padding:56px 0}
     .skills-hd{padding:0 7%;color:var(--accent);font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2rem}
     .mq-outer{overflow:hidden;mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
     .mq-track{display:flex;gap:1.25rem;width:max-content;animation:mq 30s linear infinite}
@@ -125,11 +125,14 @@
     .jhdr{position:relative;padding:96px 7% 28px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
     .jprog,.jscroll-hint{display:none}
     #jtrack{position:relative;display:flex;flex-direction:column;max-width:1200px;margin:0 auto;padding:16px 7% 96px}
-    .jpanel{width:100%;min-height:420px;display:flex;align-items:center;padding:56px 0;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
-    .jpanel:last-child{border-bottom:none}
+    .jgroup{width:100%;padding:32px 0 10px}
+    .jgroup + .jgroup{padding-top:74px}
+    .jgroup-k{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem}
+    .jgroup-title{font-family:var(--font-serif);font-size:clamp(2.1rem,4vw,3.25rem);font-weight:400;line-height:1.12;color:var(--dark);letter-spacing:0}
+    .jpanel{width:100%;min-height:420px;display:flex;align-items:center;padding:56px 0;position:relative;overflow:hidden}
     .jdeco{position:absolute;right:0;top:50%;transform:translateY(-50%);font-family:var(--font-serif);font-style:italic;font-size:clamp(6rem,16vw,13rem);font-weight:400;color:var(--border);opacity:.35;line-height:1;pointer-events:none;user-select:none}
     .jpinner{max-width:640px;position:relative;z-index:2}
-    .jpanel:nth-child(even){justify-content:flex-end}
+    .jpanel.jright{justify-content:flex-end}
     .jtype{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .875rem;border-radius:100px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;margin-bottom:1.25rem}
     .jwork{background:var(--a-bg);color:var(--accent)}
     .jedu{background:rgba(6,182,212,.1);color:#0891B2}
@@ -158,7 +161,7 @@
     .wip{padding:.22rem .6rem;background:#FFF8E7;border:1px solid #F5E6A3;border-radius:5px;font-family:var(--font-mono);font-size:.66rem;color:#92570E;font-weight:600}
 
     /* ── CONTACT ── */
-    #contact{background:var(--bg);padding:120px 7%;text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--border)}
+    #contact{background:var(--bg);padding:120px 7%;text-align:center;position:relative;overflow:hidden}
     .cblob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
     .cb1{width:500px;height:500px;background:var(--accent);opacity:.1;top:-120px;left:-100px}
     .cb2{width:360px;height:360px;background:var(--warm);opacity:.09;bottom:-80px;right:-80px}
@@ -171,7 +174,7 @@
     .clink svg{width:18px;height:18px}
 
     /* ── FOOTER ── */
-    .ft{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 7%;display:flex;align-items:center;justify-content:space-between}
+    .ft{background:var(--bg);padding:1.5rem 7%;display:flex;align-items:center;justify-content:space-between}
     .ft p{font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
 
     /* ── UTILS ── */
@@ -242,8 +245,9 @@
       #jsticky{overflow:visible}
       .jhdr{position:relative;padding:64px 5% 0;flex-direction:column;gap:.75rem}
       #jtrack{width:100%;padding:2rem 5% 56px}
-      .jpanel{width:100%;min-height:auto;padding:32px 0;border-bottom:1px solid var(--border);justify-content:flex-start!important}
-      .jpanel:last-child{border:none}
+      .jgroup{padding:24px 0 0}
+      .jgroup + .jgroup{padding-top:44px}
+      .jpanel{width:100%;min-height:auto;padding:32px 0;justify-content:flex-start!important}
       .jdeco{display:none}
       .jnum{font-size:3rem}
       .jco{font-size:1.2rem}
@@ -364,6 +368,10 @@
     </div>
     <div class="jscroll-hint">Scroll to travel through time</div>
     <div id="jtrack">
+      <div class="jgroup fi">
+        <div class="jgroup-k">Work Experience</div>
+        <h3 class="jgroup-title">Building reliable data systems in production.</h3>
+      </div>
 
       <div class="jpanel">
         <div class="jdeco">01</div>
@@ -384,7 +392,7 @@
         </div>
       </div>
 
-      <div class="jpanel">
+      <div class="jpanel jright">
         <div class="jdeco">02</div>
         <div class="jpinner">
           <span class="jtype jwork">💼 Work</span>
@@ -404,22 +412,8 @@
       <div class="jpanel">
         <div class="jdeco">03</div>
         <div class="jpinner">
-          <span class="jtype jedu">🎓 Education</span>
-          <div class="jnum">03</div>
-          <div class="jco">Washington University in St. Louis</div>
-          <div class="jro">M.S. Business Analytics</div>
-          <div class="jpe">Jan 2021 · Olin Business School</div>
-          <ul class="jbul">
-            <li>Data analytics, machine learning, and business strategy</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel">
-        <div class="jdeco">04</div>
-        <div class="jpinner">
           <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">04</div>
+          <div class="jnum">03</div>
           <div class="jco">Kroll Bond Rating Agency</div>
           <div class="jro">Data Engineer Intern</div>
           <div class="jpe">Oct 2020 – Jan 2021 · New York, NY</div>
@@ -431,11 +425,11 @@
         </div>
       </div>
 
-      <div class="jpanel">
-        <div class="jdeco">05</div>
+      <div class="jpanel jright">
+        <div class="jdeco">04</div>
         <div class="jpinner">
           <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">05</div>
+          <div class="jnum">04</div>
           <div class="jco">Regatta Craft Mixers</div>
           <div class="jro">Student Consultant</div>
           <div class="jpe">Jun – Jul 2020 · New York, NY</div>
@@ -447,10 +441,10 @@
       </div>
 
       <div class="jpanel">
-        <div class="jdeco">06</div>
+        <div class="jdeco">05</div>
         <div class="jpinner">
           <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">06</div>
+          <div class="jnum">05</div>
           <div class="jco">Emerson</div>
           <div class="jro">Student Consultant</div>
           <div class="jpe">Jan – May 2020 · Saint Louis, MO</div>
@@ -461,7 +455,26 @@
         </div>
       </div>
 
+      <div class="jgroup fi">
+        <div class="jgroup-k">Education</div>
+        <h3 class="jgroup-title">The foundation behind the data work.</h3>
+      </div>
+
       <div class="jpanel">
+        <div class="jdeco">06</div>
+        <div class="jpinner">
+          <span class="jtype jedu">🎓 Education</span>
+          <div class="jnum">06</div>
+          <div class="jco">Washington University in St. Louis</div>
+          <div class="jro">M.S. Business Analytics</div>
+          <div class="jpe">Jan 2021 · Olin Business School</div>
+          <ul class="jbul">
+            <li>Data analytics, machine learning, and business strategy</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="jpanel jright">
         <div class="jdeco">07</div>
         <div class="jpinner">
           <span class="jtype jedu">🎓 Education</span>
