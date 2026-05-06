@@ -23,15 +23,12 @@
     }
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
     /* ── CURSOR ── */
-    #cd,#cr{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
-    #cd{width:8px;height:8px;background:var(--accent);transition:width .25s,height .25s,background .25s}
-    #cr{width:36px;height:36px;border:1.5px solid var(--accent);opacity:.55;z-index:9998;transition:width .3s,height .3s,border-color .3s}
-    body.hov #cd{width:14px;height:14px;background:var(--warm)}
-    body.hov #cr{width:54px;height:54px;border-color:var(--warm);opacity:.35}
-    body.clk #cd{width:5px;height:5px}
+    #fluid-wrap{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.78}
+    #fluid{display:block;width:100vw;height:100vh}
+    @media (prefers-reduced-motion:reduce){#fluid-wrap{display:none}}
 
     /* ── NAV ── */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;background:rgba(245,242,234,.86);backdrop-filter:blur(16px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
@@ -202,7 +199,7 @@
     /* ── MOBILE (≤768px) ── */
     @media(max-width:768px){
       body{cursor:auto}
-      #cd,#cr{display:none}
+      #fluid-wrap{display:none}
       /* nav */
       nav{padding:0 5%}
       .hbg{display:flex}
@@ -269,8 +266,9 @@
 </head>
 <body>
 
-<div id="cd"></div>
-<div id="cr"></div>
+<div id="fluid-wrap" aria-hidden="true">
+  <canvas id="fluid"></canvas>
+</div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -539,19 +537,8 @@
 
 <footer><div class="ft"><p>© 2025 Jiaru Liu</p><p>Open to Senior DE roles ✦</p></div></footer>
 
+<script src="assets/js/cursify-fluid-cursor.js"></script>
 <script>
-// ── Custom lerp cursor ──
-const cd = document.getElementById('cd'), cr = document.getElementById('cr');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cd.style.left=mx+'px'; cd.style.top=my+'px'; });
-(function lr(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; cr.style.left=rx+'px'; cr.style.top=ry+'px'; requestAnimationFrame(lr); })();
-document.querySelectorAll('a,button,.scard,.pc,.tag,.mi').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
-});
-document.addEventListener('mousedown',()=>document.body.classList.add('clk'));
-document.addEventListener('mouseup',()=>document.body.classList.remove('clk'));
-
 // ── Nav scroll ──
 const nav=document.getElementById('nav');
 window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>20),{passive:true});
