@@ -117,19 +117,17 @@
     .to{background:rgba(232,148,90,.15);color:#FDBA74;border:1px solid rgba(232,148,90,.2)}
     .tp{background:rgba(196,181,253,.1);color:#C4B5FD;border:1px solid rgba(196,181,253,.15)}
 
-    /* ── JOURNEY horizontal scroll ── */
-    #jout{height:500vh}
-    #jsticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bg)}
-    .jhdr{position:absolute;top:0;left:0;right:0;padding:72px 7% 0;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
-    .jprog{display:flex;gap:.5rem;align-items:center;padding-top:6px}
-    .jdot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .3s,transform .3s}
-    .jdot.on{background:var(--accent);transform:scale(1.5)}
-    .jscroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:.625rem;color:var(--muted);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
-    .jscroll-hint::before,.jscroll-hint::after{content:'';width:24px;height:1px;background:var(--border)}
-    #jtrack{position:absolute;top:0;left:0;display:flex;height:100%;will-change:transform}
-    .jpanel{width:100vw;height:100vh;display:flex;align-items:center;padding:140px 7% 80px;flex-shrink:0;position:relative}
-    .jdeco{position:absolute;right:6%;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-style:italic;font-size:22vw;font-weight:400;color:var(--border);opacity:.35;line-height:1;pointer-events:none;user-select:none}
-    .jpinner{max-width:580px;position:relative;z-index:2}
+    /* ── JOURNEY vertical timeline ── */
+    #jout{background:var(--bg)}
+    #jsticky{position:relative;overflow:hidden;background:var(--bg)}
+    .jhdr{position:relative;padding:96px 7% 28px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+    .jprog,.jscroll-hint{display:none}
+    #jtrack{position:relative;display:flex;flex-direction:column;max-width:1200px;margin:0 auto;padding:16px 7% 96px}
+    .jpanel{width:100%;min-height:420px;display:flex;align-items:center;padding:56px 0;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+    .jpanel:last-child{border-bottom:none}
+    .jdeco{position:absolute;right:0;top:50%;transform:translateY(-50%);font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(6rem,16vw,13rem);font-weight:400;color:var(--border);opacity:.35;line-height:1;pointer-events:none;user-select:none}
+    .jpinner{max-width:640px;position:relative;z-index:2}
+    .jpanel:nth-child(even){justify-content:flex-end}
     .jtype{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .875rem;border-radius:100px;font-size:.74rem;font-weight:600;margin-bottom:1.25rem}
     .jwork{background:var(--a-bg);color:var(--accent)}
     .jedu{background:rgba(6,182,212,.1);color:#0891B2}
@@ -196,8 +194,8 @@
       .sgrid-wrap{padding:32px 6% 60px}
       .skills-hd{padding:0 6%}
       .jhdr{padding:60px 6% 0}
-      .jpanel{padding:120px 6% 60px}
-      #jout{height:450vh}
+      #jtrack{padding:16px 6% 72px}
+      .jpanel{min-height:360px;padding:48px 0}
       .pgrid{grid-template-columns:repeat(2,1fr)}
     }
 
@@ -241,16 +239,13 @@
       .skills-hd{padding:0 5%}
       .sgrid-wrap{padding:32px 5% 60px}
       .sgrid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
-      /* journey — vertical fallback */
-      #jout{height:auto}
-      #jsticky{position:relative;height:auto;overflow:visible;background:var(--bg)}
+      /* journey */
+      #jsticky{overflow:visible}
       .jhdr{position:relative;padding:64px 5% 0;flex-direction:column;gap:.75rem}
-      .jprog{display:none}
-      #jtrack{position:relative;flex-direction:column;width:100%;transform:none!important;padding-top:2rem}
-      .jpanel{width:100%;height:auto;padding:32px 5%;border-bottom:1px solid var(--border)}
+      #jtrack{width:100%;padding:2rem 5% 56px}
+      .jpanel{width:100%;min-height:auto;padding:32px 0;border-bottom:1px solid var(--border);justify-content:flex-start!important}
       .jpanel:last-child{border:none}
       .jdeco{display:none}
-      .jscroll-hint{display:none}
       .jnum{font-size:3rem}
       .jco{font-size:1.2rem}
       /* projects */
@@ -594,25 +589,6 @@ const mqItems=[
 const mqt=document.getElementById('mqt');
 const mqHTML=mqItems.map(i=>`<span class="mi"><span class="midot" style="background:${i.c}"></span>${i.l}</span>`).join('');
 mqt.innerHTML=mqHTML+mqHTML; // duplicate for seamless loop
-
-// ── Journey horizontal scroll ──
-const jout=document.getElementById('jout'), jsticky=document.getElementById('jsticky'), jtrack=document.getElementById('jtrack'), jprog=document.getElementById('jprog');
-const panels=document.querySelectorAll('.jpanel'), PC=panels.length;
-jprog.innerHTML=Array.from({length:PC},(_,i)=>`<div class="jdot${i===0?' on':''}"></div>`).join('');
-const jdots=jprog.querySelectorAll('.jdot');
-
-function updateJourney(){
-  if(innerWidth<=768)return;
-  const rect=jout.getBoundingClientRect();
-  const prog=Math.max(0,Math.min(1,-rect.top/(rect.height-innerHeight)));
-  const maxX=(PC-1)*innerWidth;
-  jtrack.style.transform=`translateX(${-prog*maxX}px)`;
-  const idx=Math.round(prog*(PC-1));
-  jdots.forEach((d,i)=>d.classList.toggle('on',i===idx));
-}
-window.addEventListener('scroll',updateJourney,{passive:true});
-window.addEventListener('resize',updateJourney);
-updateJourney();
 
 // ── Reveal titles word-by-word ──
 document.querySelectorAll('.rtitle[data-sp]').forEach(el=>{
