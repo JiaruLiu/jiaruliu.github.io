@@ -1,297 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jiaru Liu · Data Engineer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:      #F8F8F7;
-      --surface: #F8F8F7;
-      --dark:    #17160F;
-      --text:    #3A382E;
-      --muted:   #7D7B70;
-      --accent:  #6159E0;
-      --a-bg:    #EEEDFA;
-      --warm:    #E8945A;
-      --w-bg:    #FDF3EC;
-      --green:   #52B788;
-      --border:  #E4DFCE;
-      --sh:      0 2px 8px rgba(23,22,15,.06),0 8px 32px rgba(23,22,15,.04);
-      --sh-h:    0 12px 40px rgba(97,89,224,.22);
-      --font-sans:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      --font-serif:'Cormorant Garamond',Georgia,serif;
-      --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{font-family:var(--font-sans);background:var(--bg);color:var(--text);overflow-x:hidden}
-
-    /* ── CURSOR ── */
-    #fluid-wrap{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.78}
-    #fluid{display:block;width:100vw;height:100vh}
-    @media (prefers-reduced-motion:reduce){#fluid-wrap{display:none}}
-
-    /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;background:rgba(248,248,247,.86);backdrop-filter:blur(16px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
-    nav.sc{border-color:var(--border);box-shadow:0 1px 0 var(--border)}
-    .nlogo{font-family:var(--font-serif);font-style:italic;font-size:1.35rem;color:var(--dark);text-decoration:none}
-    .nlogo span{color:var(--accent);font-style:normal}
-    .nlinks{display:flex;gap:1.75rem;list-style:none}
-    .nlinks a{font-family:var(--font-mono);color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.04em;transition:color .2s;position:relative}
-    .nlinks a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
-    .nlinks a:hover{color:var(--accent)}
-    .nlinks a:hover::after{transform:scaleX(1)}
-
-    /* ── HERO ── */
-    #hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
-    #hcanvas{position:absolute;inset:0;width:100%;height:100%;opacity:.6}
-    .hblob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.16;pointer-events:none;transition:transform .9s cubic-bezier(.23,1,.32,1)}
-    .hb1{width:420px;height:420px;background:var(--accent);top:5%;right:12%}
-    .hb2{width:300px;height:300px;background:var(--warm);bottom:18%;right:28%}
-    .hb3{width:220px;height:220px;background:var(--green);top:38%;right:3%}
-    .hcnt{position:relative;z-index:2;padding:0 7%;width:100%}
-    .hpre{display:inline-flex;align-items:center;gap:.5rem;color:var(--muted);font-family:var(--font-mono);font-size:.78rem;font-weight:500;letter-spacing:.05em;margin-bottom:1.5rem}
-    .hdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2.2s infinite}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-    .hname{line-height:.9;margin-bottom:2rem}
-    .hn1{display:block;font-family:var(--font-serif);font-style:italic;font-size:clamp(4.5rem,12vw,10rem);font-weight:400;color:var(--dark);letter-spacing:0}
-    .hn2{display:block;font-size:clamp(2rem,6vw,5rem);font-weight:800;color:var(--accent);letter-spacing:0;line-height:1}
-    .htag{font-size:clamp(.9rem,1.8vw,1.15rem);color:var(--muted);max-width:480px;line-height:1.8;margin-bottom:2.5rem}
-    .htag strong{color:var(--text)}
-    .hcta{display:flex;gap:.875rem;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.75rem;border-radius:100px;font-family:var(--font-mono);font-weight:600;font-size:.82rem;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s,color .2s,border-color .2s}
-    .btn-dk{background:var(--dark);color:#FDFCF8}
-    .btn-dk:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(23,22,15,.25);background:var(--accent)}
-    .btn-gh{background:transparent;color:var(--dark);border:1.5px solid var(--border)}
-    .btn-gh:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent)}
-    .scrollhint{position:absolute;bottom:2.5rem;left:7%;display:flex;align-items:center;gap:.75rem;color:var(--muted);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
-    .sline{width:40px;height:1px;background:var(--muted);animation:sla 1.8s ease infinite}
-    @keyframes sla{0%{transform:scaleX(0);transform-origin:left}50%{transform:scaleX(1);transform-origin:left}51%{transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
-
-    /* ── SHARED ── */
-    .wrap{padding:96px 7%;max-width:1200px;margin:0 auto}
-    .eye{display:inline-flex;align-items:center;gap:.5rem;color:var(--accent);font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.625rem}
-    .eye::before{content:'';width:18px;height:1.5px;background:var(--accent)}
-    .rtitle{font-family:var(--font-serif);font-size:clamp(2.2rem,4vw,3.3rem);font-weight:600;color:var(--dark);letter-spacing:0;line-height:1.05;margin-bottom:.75rem;overflow:hidden}
-    .rtitle .w{display:inline-block;overflow:hidden}
-    .rtitle .wi{display:inline-block;transform:translateY(110%);opacity:0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .4s ease}
-    .rtitle.rev .wi{transform:translateY(0);opacity:1}
-    .ssub{font-size:1rem;color:var(--muted);line-height:1.75;max-width:560px;margin-bottom:3rem}
-
-    /* ── ABOUT ── */
-    #about{background:var(--bg);position:relative;overflow:hidden}
-    .about-editorial{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(420px,1fr);gap:5rem;align-items:center;position:relative;margin-top:3rem}
-    .apic{min-height:620px;position:relative;display:flex;align-items:flex-end;justify-content:center}
-    .apic::before{content:'';position:absolute;left:8%;right:8%;bottom:0;height:78%;background:linear-gradient(180deg,rgba(97,89,224,.08),rgba(232,148,90,.08));border-radius:52% 48% 0 0 / 20% 20% 0 0}
-    .aportrait{position:relative;z-index:1;width:min(82%,420px);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff,#EFEEE8);border:1px solid rgba(23,22,15,.08);box-shadow:0 28px 70px rgba(23,22,15,.12);overflow:hidden}
-    .aportrait::before{content:'JL';font-family:var(--font-serif);font-size:clamp(7rem,13vw,12rem);font-style:italic;color:rgba(97,89,224,.28);letter-spacing:0}
-    .aportrait::after{content:'';position:absolute;left:12%;right:12%;bottom:12%;height:1px;background:rgba(0,47,167,.18)}
-    .acopy{position:relative;z-index:1;max-width:620px}
-    .astmt{font-family:var(--font-serif);font-size:clamp(2.25rem,4vw,3.6rem);font-weight:400;line-height:1.48;color:var(--dark);letter-spacing:0;margin-bottom:2rem}
-    .astmt em{font-style:normal;color:#002FA7}
-    .abadges{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:2rem}
-    .abadges span{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:.55rem 1rem;border:1px solid rgba(0,47,167,.38);color:#002FA7;background:transparent;font-family:var(--font-mono);font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
-    .apara{display:flex;flex-direction:column;gap:1.25rem}
-    .apara p{font-family:var(--font-serif);font-size:1.12rem;line-height:1.82;color:#5F5D66}
-    .apara strong{color:#002FA7;font-weight:400}
-
-    /* ── SKILLS ── */
-    #skills{background:var(--bg);overflow:hidden;padding:56px 0}
-    .skills-hd{padding:0 7%;color:var(--accent);font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2rem}
-    .mq-outer{overflow:hidden;mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
-    .mq-track{display:flex;gap:1.25rem;width:max-content;animation:mq 30s linear infinite}
-    .mq-track:hover{animation-play-state:paused}
-    @keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .mi{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.2rem;border-radius:100px;background:#fff;border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:.78rem;font-weight:500;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}
-    .mi:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .midot{width:5px;height:5px;border-radius:50%}
-    .sgrid-wrap{padding:40px 7% 72px;max-width:1200px;margin:0 auto}
-    .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:2rem}
-    .scat h4{font-family:var(--font-mono);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.875rem}
-    .trow{display:flex;flex-wrap:wrap;gap:.5rem}
-    .tag{display:inline-block;padding:.3rem .75rem;border-radius:6px;font-family:var(--font-mono);font-size:.72rem;font-weight:500;cursor:default;transition:transform .15s}
-    .tag:hover{transform:translateY(-2px)}
-    .tv{background:rgba(97,89,224,.2);color:#A5A0F5;border:1px solid rgba(97,89,224,.25)}
-    .tc{background:rgba(6,182,212,.15);color:#67E8F9;border:1px solid rgba(6,182,212,.2)}
-    .tg{background:rgba(82,183,136,.15);color:#86EFAC;border:1px solid rgba(82,183,136,.2)}
-    .to{background:rgba(232,148,90,.15);color:#FDBA74;border:1px solid rgba(232,148,90,.2)}
-    .tp{background:rgba(196,181,253,.1);color:#C4B5FD;border:1px solid rgba(196,181,253,.15)}
-
-    /* ── JOURNEY vertical timeline ── */
-    #jout{background:var(--bg)}
-    #jsticky{position:relative;overflow:hidden;background:var(--bg)}
-    .jhdr{position:relative;padding:96px 7% 28px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
-    .jprog,.jscroll-hint{display:none}
-    #jtrack{position:relative;display:flex;flex-direction:column;max-width:1200px;margin:0 auto;padding:16px 7% 96px}
-    .jgroup{width:100%;padding:32px 0 10px}
-    .jgroup + .jgroup{padding-top:74px}
-    .jgroup-k{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem}
-    .jgroup-title{font-family:var(--font-serif);font-size:clamp(2.1rem,4vw,3.25rem);font-weight:400;line-height:1.12;color:var(--dark);letter-spacing:0}
-    .jpanel{width:100%;min-height:420px;display:flex;align-items:center;padding:56px 0;position:relative;overflow:hidden}
-    .jdeco{position:absolute;right:0;top:50%;transform:translateY(-50%);font-family:var(--font-serif);font-style:italic;font-size:clamp(6rem,16vw,13rem);font-weight:400;color:var(--border);opacity:.35;line-height:1;pointer-events:none;user-select:none}
-    .jpinner{max-width:640px;position:relative;z-index:2}
-    .jpanel.jright{justify-content:flex-end}
-    .jtype{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .875rem;border-radius:100px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;margin-bottom:1.25rem}
-    .jwork{background:var(--a-bg);color:var(--accent)}
-    .jedu{background:rgba(6,182,212,.1);color:#0891B2}
-    .jnum{font-family:var(--font-serif);font-style:italic;font-size:clamp(3.5rem,9vw,7rem);font-weight:400;color:var(--border);line-height:1;margin-bottom:.25rem;letter-spacing:0}
-    .jco{font-family:var(--font-serif);font-size:1.8rem;font-weight:600;color:var(--dark);letter-spacing:0;margin-bottom:.2rem}
-    .jro{font-size:1.05rem;color:var(--accent);font-weight:500;margin-bottom:.2rem}
-    .jpe{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);margin-bottom:1.5rem}
-    .jbul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
-    .jbul li{font-size:.925rem;line-height:1.6;color:var(--text);padding-left:1.25rem;position:relative}
-    .jbul li::before{content:'–';position:absolute;left:0;color:var(--accent)}
-
-    /* ── PROJECTS ── */
-    #projects{background:var(--bg)}
-    .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.5rem}
-    .pc{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.875rem;display:flex;flex-direction:column;gap:1rem;transition:box-shadow .2s,border-color .2s;transform-style:preserve-3d;will-change:transform}
-    .pc:hover{border-color:rgba(97,89,224,.3)}
-    .ptop{display:flex;justify-content:space-between;align-items:flex-start}
-    .pico{font-size:2rem}
-    .pgh{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:color .2s,border-color .2s}
-    .pgh:hover{color:var(--accent);border-color:var(--accent)}
-    .pgh svg{width:15px;height:15px}
-    .pn{font-family:var(--font-serif);font-size:1.35rem;font-weight:600;color:var(--dark)}
-    .pd{font-size:.875rem;color:var(--muted);line-height:1.65;flex:1}
-    .ptags{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:auto}
-    .ptag{padding:.22rem .6rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;font-family:var(--font-mono);font-size:.68rem;color:var(--muted);font-weight:500}
-    .wip{padding:.22rem .6rem;background:#FFF8E7;border:1px solid #F5E6A3;border-radius:5px;font-family:var(--font-mono);font-size:.66rem;color:#92570E;font-weight:600}
-
-    /* ── CONTACT ── */
-    #contact{background:var(--bg);padding:120px 7%;text-align:center;position:relative;overflow:hidden}
-    .cblob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
-    .cb1{width:500px;height:500px;background:var(--accent);opacity:.1;top:-120px;left:-100px}
-    .cb2{width:360px;height:360px;background:var(--warm);opacity:.09;bottom:-80px;right:-80px}
-    .ceye{font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
-    .ctitle{font-family:var(--font-serif);font-style:italic;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:400;color:var(--dark);letter-spacing:0;line-height:1;margin-bottom:1.5rem}
-    .csub{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto 3rem;line-height:1.7}
-    .clinks{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
-    .clink{display:inline-flex;align-items:center;gap:.6rem;padding:.875rem 1.75rem;background:#fff;border:1px solid var(--border);border-radius:100px;color:var(--text);text-decoration:none;font-family:var(--font-mono);font-weight:500;font-size:.78rem;transition:background .2s,border-color .2s,color .2s,transform .2s}
-    .clink:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-2px)}
-    .clink svg{width:18px;height:18px}
-
-    /* ── FOOTER ── */
-    .ft{background:var(--bg);padding:1.5rem 7%;display:flex;align-items:center;justify-content:space-between}
-    .ft p{font-family:var(--font-mono);font-size:.74rem;color:var(--muted)}
-
-    /* ── UTILS ── */
-    .fi{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
-    .fi.on{opacity:1;transform:translateY(0)}
-
-    /* ── HAMBURGER ── */
-    .hbg{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;padding:6px;cursor:pointer;z-index:101}
-    .hbg span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:transform .3s,opacity .3s,width .3s}
-    .hbg.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-    .hbg.open span:nth-child(2){opacity:0;width:14px}
-    .hbg.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-
-    /* ── TABLET (769–1024px) ── */
-    @media(min-width:769px) and (max-width:1024px){
-      .wrap{padding:80px 6%}
-      nav{padding:0 6%}
-      .hcnt{padding:0 6%}
-      .hn1{font-size:clamp(4rem,10vw,7rem)}
-      .sgrid{grid-template-columns:repeat(3,1fr)}
-      .sgrid-wrap{padding:32px 6% 60px}
-      .skills-hd{padding:0 6%}
-      .jhdr{padding:60px 6% 0}
-      #jtrack{padding:16px 6% 72px}
-      .jpanel{min-height:360px;padding:48px 0}
-      .pgrid{grid-template-columns:repeat(2,1fr)}
-    }
-
-    /* ── MOBILE (≤768px) ── */
-    @media(max-width:768px){
-      body{cursor:auto}
-      #fluid-wrap{display:none}
-      /* nav */
-      nav{padding:0 5%}
-      .hbg{display:flex}
-      .nlinks{
-        position:fixed;top:60px;left:0;right:0;
-        flex-direction:column;gap:0;list-style:none;
-        background:rgba(248,248,247,.97);
-        backdrop-filter:blur(20px);
-        border-bottom:1px solid var(--border);
-        transform:translateY(-110%);
-        transition:transform .35s cubic-bezier(.23,1,.32,1);
-        z-index:99;padding:1rem 0;
-      }
-      .nlinks.open{transform:translateY(0)}
-      .nlinks li{border-bottom:1px solid var(--border)}
-      .nlinks li:last-child{border:none}
-      .nlinks a{display:block;padding:.875rem 5%;font-size:1rem;color:var(--text)}
-      .nlinks a::after{display:none}
-      /* hero */
-      .hcnt{padding:0 5%}
-      .scrollhint{padding-left:5%}
-      .hb1{width:260px;height:260px;top:5%;right:-60px}
-      .hb2{width:180px;height:180px;bottom:15%;right:10%}
-      .hb3{display:none}
-      /* about */
-      .wrap{padding:64px 5%}
-      .about-editorial{grid-template-columns:1fr;gap:2.75rem}
-      .apic{min-height:420px;align-items:center}
-      .aportrait{width:min(72%,340px)}
-      .astmt{font-size:clamp(2rem,8vw,3rem);line-height:1.35}
-      /* skills */
-      .skills-hd{padding:0 5%}
-      .sgrid-wrap{padding:32px 5% 60px}
-      .sgrid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
-      /* journey */
-      #jsticky{overflow:visible}
-      .jhdr{position:relative;padding:64px 5% 0;flex-direction:column;gap:.75rem}
-      #jtrack{width:100%;padding:2rem 5% 56px}
-      .jgroup{padding:24px 0 0}
-      .jgroup + .jgroup{padding-top:44px}
-      .jpanel{width:100%;min-height:auto;padding:32px 0;justify-content:flex-start!important}
-      .jdeco{display:none}
-      .jnum{font-size:3rem}
-      .jco{font-size:1.2rem}
-      /* projects */
-      .pgrid{grid-template-columns:1fr}
-      /* contact */
-      #contact{padding:80px 5%}
-      .clinks{flex-direction:column;align-items:center}
-      /* footer */
-      .ft{flex-direction:column;gap:.5rem;text-align:center;padding:1.25rem 5%}
-    }
-
-    /* ── SMALL MOBILE (≤480px) ── */
-    @media(max-width:480px){
-      .hn1{font-size:clamp(3.5rem,18vw,5.5rem)}
-      .hn2{font-size:clamp(1.75rem,10vw,3rem)}
-      .apic{min-height:320px}
-      .aportrait{width:min(86%,280px)}
-      .abadges span{width:100%}
-      .sgrid{grid-template-columns:1fr}
-      .ctitle{font-size:clamp(2rem,12vw,3.5rem)}
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jiaru Liu · Data Engineer & AI Builder</title>
+<meta name="description" content="Senior Data Engineer with 5+ years of experience in real-time pipelines, cloud infrastructure, and AI/LLM systems."/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 
-<div id="fluid-wrap" aria-hidden="true">
-  <canvas id="fluid"></canvas>
-</div>
+<canvas id="fluid" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
 
 <!-- NAV -->
-<nav id="nav">
-  <a href="#hero" class="nlogo">Jiaru<span>.</span></a>
-  <button class="hbg" id="hbg" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
-  <ul class="nlinks" id="nlinks">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#jout">Journey</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<div id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nlogo">Jiaru<span></span></a>
+    <button class="hbg" id="hbg" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nlinks" id="nlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#jout">Journey</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -299,16 +35,36 @@
   <div class="hblob hb1" data-d="1"></div>
   <div class="hblob hb2" data-d="1.8"></div>
   <div class="hblob hb3" data-d="2.6"></div>
-  <div class="hcnt">
-    <div class="hpre"><div class="hdot"></div>Data Engineering · AI · Platform Systems</div>
-    <div class="hname">
-      <span class="hn1">Jiaru</span>
-      <span class="hn2">Liu</span>
+  <div class="hero-layout">
+    <div class="hero-left">
+<div class="hpre"><div class="hdot"></div>Data Engineering · AI · Platform Systems</div>
+      <div class="hname">
+        <span class="hn1">Jiaru</span>
+        <span class="hn2">Liu</span>
+      </div>
+      <p class="htag"><strong>Data Engineer &amp; AI Enthusiast.</strong> I design pipelines that move, transform, and unlock data at scale — from raw event streams to production ML systems.</p>
+      <div class="hcta">
+        <a href="#jout" class="btn btn-dk">View My Journey ↓</a>
+        <a href="#" class="btn btn-gh">Download Resume ↗</a>
+      </div>
     </div>
-    <p class="htag"><strong>Data Engineer &amp; AI Enthusiast.</strong> I design pipelines that move, transform, and unlock data at scale — from raw event streams to production ML systems.</p>
-    <div class="hcta">
-      <a href="#jout" class="btn btn-dk">View My Journey ↓</a>
-      <a href="#" class="btn btn-gh">Download Resume ↗</a>
+    <div class="hero-right">
+      <div class="mini-card">
+        <div class="mc-num">5+</div>
+        <div class="mc-label">yrs experience</div>
+      </div>
+      <div class="mini-card">
+        <div class="mc-num">$400K</div>
+        <div class="mc-label">cloud savings led</div>
+      </div>
+      <div class="mini-card">
+        <div class="mc-num">800M</div>
+        <div class="mc-label">records/day pipelines</div>
+      </div>
+      <div class="mini-card mini-card-accent">
+        <div class="mc-num mc-emoji">🤖 AI</div>
+        <div class="mc-label">LLM pipelines in prod</div>
+      </div>
     </div>
   </div>
   <div class="scrollhint"><div class="sline"></div>Scroll</div>
@@ -317,22 +73,41 @@
 <!-- ABOUT -->
 <section id="about">
   <div class="wrap">
-    <div class="about-editorial">
-      <div class="apic fi">
-        <div class="aportrait" aria-hidden="true"></div>
+    <div class="eye">About me</div>
+    <h2 class="rtitle" data-sp>Beyond the job title.</h2>
+    <div class="about-grid">
+      <div class="about-big fi">
+        <h3>I notice <em>patterns</em>, follow half-formed questions,<br>and build through the mess until scattered ideas become <em>something real</em>.</h3>
+        <p>I'm a good listener who builds data systems. I like finding the balance between what people need and what technology can do — 5+ years of that instinct has gone into real-time pipelines, cloud migrations, and LLM tools that let stakeholders talk directly to data without waiting on anyone. Outside work I'm usually exploring something completely different: a farm visit, a concert, a round of table tennis. The same restlessness that takes me somewhere new every weekend is what keeps me asking why at work.</p>
+        <div class="about-badges">
+          <span class="abadge">Data-minded</span>
+          <span class="abadge">AI-curious</span>
+          <span class="abadge">Reliability-driven</span>
+        </div>
       </div>
-      <div class="acopy fi">
-        <h2 class="astmt">I ask <em>what if</em> a lot, build from the <em>mess</em>, and turn data into systems people can actually trust.</h2>
-        <div class="abadges">
-          <span>Data-minded</span>
-          <span>AI-curious</span>
-          <span>Reliability-driven</span>
-        </div>
-        <div class="apara">
-          <p>I'm a data engineer with 5+ years of experience designing infrastructure for analytics, product, and AI teams. My work spans <strong>real-time streaming</strong>, cloud migration, Medallion architecture, governance, and MLOps.</p>
-          <p>Lately I've been focused on productionizing <strong>LLM pipelines</strong>, building evaluation frameworks, and exploring how generative AI can make data platform work faster, clearer, and more humane.</p>
-          <p>Outside of data, I find energy in running, baking, and guitar. Inside the work, I care most about systems that are observable, understandable, and trusted by the people who depend on them.</p>
-        </div>
+      <div class="about-card fi">
+        <div class="acard-icon">⚡</div>
+        <div class="acard-label">Speciality</div>
+        <div class="acard-title">Real-time at scale</div>
+        <div class="acard-desc">Streaming pipelines handling 60M–800M records/day with 90–95% latency reduction.</div>
+      </div>
+      <div class="about-card fi">
+        <div class="acard-icon">🤖</div>
+        <div class="acard-label">Current focus</div>
+        <div class="acard-title">LLM &amp; AI pipelines</div>
+        <div class="acard-desc">Productionizing ML/LLM systems with load testing, CI/CD, and evaluation frameworks.</div>
+      </div>
+      <div class="about-card fi">
+        <div class="acard-icon">🏗️</div>
+        <div class="acard-label">Strength</div>
+        <div class="acard-title">Platform architecture</div>
+        <div class="acard-desc">AWS → Databricks migration. PII governance with Unity Catalog. Medallion architecture.</div>
+      </div>
+      <div class="about-card fi">
+        <div class="acard-icon">🌏</div>
+        <div class="acard-label">Outside work</div>
+        <div class="acard-title">Tennis, baking &amp; guitar</div>
+        <div class="acard-desc">I find energy in motion. Inside the work, I care most about observable, trusted systems.</div>
       </div>
     </div>
   </div>
@@ -358,137 +133,134 @@
 
 <!-- JOURNEY -->
 <div id="jout">
-  <div id="jsticky">
-    <div class="jhdr">
-      <div>
-        <div class="eye">My Journey</div>
-        <h2 class="rtitle" data-sp>From student to senior engineer.</h2>
-      </div>
-      <div class="jprog" id="jprog"></div>
+  <div class="jhdr">
+    <div class="fi">
+      <div class="eye">My Journey</div>
+      <h2 class="rtitle" data-sp>From student to senior engineer.</h2>
     </div>
-    <div class="jscroll-hint">Scroll to travel through time</div>
-    <div id="jtrack">
-      <div class="jgroup fi">
-        <div class="jgroup-k">Work Experience</div>
-        <h3 class="jgroup-title">Building reliable data systems in production.</h3>
-      </div>
+  </div>
+  <div id="jtrack">
 
-      <div class="jpanel">
-        <div class="jdeco">01</div>
-        <div class="jpinner">
-          <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">01</div>
-          <div class="jco">GoGuardian</div>
-          <div class="jro">Data Engineer II</div>
-          <div class="jpe">Feb 2023 – Present · Los Angeles, CA</div>
-          <ul class="jbul">
-            <li>Led AWS→Databricks migration, saving ~$400K/year in cloud costs</li>
-            <li>Built real-time event pipelines: 60M–800M records/day, 90–95% latency reduction</li>
-            <li>Re-architected MongoDB CDC from Kafka to Spark Structured Streaming</li>
-            <li>Productionized 5+ ML/LLM pipelines with load testing &amp; CI/CD</li>
-            <li>Built PII governance with Unity Catalog fine-grained access control</li>
-            <li>Led cross-team initiatives, mentored junior engineers</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel jright">
-        <div class="jdeco">02</div>
-        <div class="jpinner">
-          <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">02</div>
-          <div class="jco">GoGuardian</div>
-          <div class="jro">Data Engineer I</div>
-          <div class="jpe">Apr 2021 – Feb 2023 · Los Angeles, CA</div>
-          <ul class="jbul">
-            <li>Built ETL pipelines from 30+ sources into S3 &amp; Redshift</li>
-            <li>Set up Airflow with custom operators, hooks, and DAGs</li>
-            <li>Managed AWS infra with Terraform across multiple environments</li>
-            <li>Reduced analytics query time by 75–80% via data model redesign</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel">
-        <div class="jdeco">03</div>
-        <div class="jpinner">
-          <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">03</div>
-          <div class="jco">Kroll Bond Rating Agency</div>
-          <div class="jro">Data Engineer Intern</div>
-          <div class="jpe">Oct 2020 – Jan 2021 · New York, NY</div>
-          <ul class="jbul">
-            <li>Built CNN models for time-series anomaly detection on 50+ GiB</li>
-            <li>Python packages with GitLab CI/CD &amp; static analysis</li>
-            <li>Containerized deployments with Docker + Terraform</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel jright">
-        <div class="jdeco">04</div>
-        <div class="jpinner">
-          <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">04</div>
-          <div class="jco">Regatta Craft Mixers</div>
-          <div class="jro">Student Consultant</div>
-          <div class="jpe">Jun – Jul 2020 · New York, NY</div>
-          <ul class="jbul">
-            <li>Analyzed social media &amp; survey data in Python and Tableau</li>
-            <li>Delivered grocery channel market entry strategy</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel">
-        <div class="jdeco">05</div>
-        <div class="jpinner">
-          <span class="jtype jwork">💼 Work</span>
-          <div class="jnum">05</div>
-          <div class="jco">Emerson</div>
-          <div class="jro">Student Consultant</div>
-          <div class="jpe">Jan – May 2020 · Saint Louis, MO</div>
-          <ul class="jbul">
-            <li>Standardized KPIs across a $6B+ commercial business unit</li>
-            <li>Reduced data check cycle time by ~20% with new framework</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jgroup fi">
-        <div class="jgroup-k">Education</div>
-        <h3 class="jgroup-title">The foundation behind the data work.</h3>
-      </div>
-
-      <div class="jpanel">
-        <div class="jdeco">06</div>
-        <div class="jpinner">
-          <span class="jtype jedu">🎓 Education</span>
-          <div class="jnum">06</div>
-          <div class="jco">Washington University in St. Louis</div>
-          <div class="jro">M.S. Business Analytics</div>
-          <div class="jpe">Jan 2021 · Olin Business School</div>
-          <ul class="jbul">
-            <li>Data analytics, machine learning, and business strategy</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="jpanel jright">
-        <div class="jdeco">07</div>
-        <div class="jpinner">
-          <span class="jtype jedu">🎓 Education</span>
-          <div class="jnum">07</div>
-          <div class="jco">Dalian University of Technology</div>
-          <div class="jro">B.Mgmt. in E-commerce</div>
-          <div class="jpe">Jun 2019 · Dalian, China</div>
-          <ul class="jbul">
-            <li>Management, economics, and information systems</li>
-          </ul>
-        </div>
-      </div>
-
+    <div class="jgroup fi">
+      <div class="jgroup-k">Work Experience</div>
+      <h3 class="jgroup-title">Building reliable data systems in production.</h3>
     </div>
+
+    <div class="jpanel fi">
+      <div class="jdeco">01</div>
+      <div class="jpinner">
+        <span class="jtype jwork">💼 Work</span>
+        <div class="jnum">01</div>
+        <div class="jco">GoGuardian</div>
+        <div class="jro">Data Engineer II</div>
+        <div class="jpe">Feb 2023 – Present · Los Angeles, CA</div>
+        <ul class="jbul">
+          <li>Led AWS→Databricks migration, saving ~$400K/year in cloud costs</li>
+          <li>Built real-time event pipelines: 60M–800M records/day, 90–95% latency reduction</li>
+          <li>Re-architected MongoDB CDC from Kafka to Spark Structured Streaming</li>
+          <li>Productionized 5+ ML/LLM pipelines with load testing &amp; CI/CD</li>
+          <li>Built PII governance with Unity Catalog fine-grained access control</li>
+          <li>Led cross-team initiatives, mentored junior engineers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jpanel jright fi">
+      <div class="jdeco">02</div>
+      <div class="jpinner">
+        <span class="jtype jwork">💼 Work</span>
+        <div class="jnum">02</div>
+        <div class="jco">GoGuardian</div>
+        <div class="jro">Data Engineer I</div>
+        <div class="jpe">Apr 2021 – Feb 2023 · Los Angeles, CA</div>
+        <ul class="jbul">
+          <li>Built ETL pipelines from 30+ sources into S3 &amp; Redshift</li>
+          <li>Set up Airflow with custom operators, hooks, and DAGs</li>
+          <li>Managed AWS infra with Terraform across multiple environments</li>
+          <li>Reduced analytics query time by 75–80% via data model redesign</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jpanel fi">
+      <div class="jdeco">03</div>
+      <div class="jpinner">
+        <span class="jtype jwork">💼 Work</span>
+        <div class="jnum">03</div>
+        <div class="jco">Kroll Bond Rating Agency</div>
+        <div class="jro">Data Engineer Intern</div>
+        <div class="jpe">Oct 2020 – Jan 2021 · New York, NY</div>
+        <ul class="jbul">
+          <li>Built CNN models for time-series anomaly detection on 50+ GiB</li>
+          <li>Python packages with GitLab CI/CD &amp; static analysis</li>
+          <li>Containerized deployments with Docker + Terraform</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jpanel jright fi">
+      <div class="jdeco">04</div>
+      <div class="jpinner">
+        <span class="jtype jwork">💼 Work</span>
+        <div class="jnum">04</div>
+        <div class="jco">Regatta Craft Mixers</div>
+        <div class="jro">Student Consultant</div>
+        <div class="jpe">Jun – Jul 2020 · New York, NY</div>
+        <ul class="jbul">
+          <li>Analyzed social media &amp; survey data in Python and Tableau</li>
+          <li>Delivered grocery channel market entry strategy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jpanel fi">
+      <div class="jdeco">05</div>
+      <div class="jpinner">
+        <span class="jtype jwork">💼 Work</span>
+        <div class="jnum">05</div>
+        <div class="jco">Emerson</div>
+        <div class="jro">Student Consultant</div>
+        <div class="jpe">Jan – May 2020 · Saint Louis, MO</div>
+        <ul class="jbul">
+          <li>Standardized KPIs across a $6B+ commercial business unit</li>
+          <li>Reduced data check cycle time by ~20% with new framework</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jgroup fi" style="margin-top:2rem">
+      <div class="jgroup-k">Education</div>
+      <h3 class="jgroup-title">The foundation behind the data work.</h3>
+    </div>
+
+    <div class="jpanel jright fi">
+      <div class="jdeco">06</div>
+      <div class="jpinner">
+        <span class="jtype jedu">🎓 Education</span>
+        <div class="jnum">06</div>
+        <div class="jco">Washington University in St. Louis</div>
+        <div class="jro">M.S. Business Analytics</div>
+        <div class="jpe">Jan 2021 · Olin Business School</div>
+        <ul class="jbul">
+          <li>Data analytics, machine learning, and business strategy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="jpanel fi">
+      <div class="jdeco">07</div>
+      <div class="jpinner">
+        <span class="jtype jedu">🎓 Education</span>
+        <div class="jnum">07</div>
+        <div class="jco">Dalian University of Technology</div>
+        <div class="jro">B.Mgmt. in E-commerce</div>
+        <div class="jpe">Jun 2019 · Dalian, China</div>
+        <ul class="jbul">
+          <li>Management, economics, and information systems</li>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -497,34 +269,41 @@
   <div class="wrap">
     <div class="eye">Projects</div>
     <h2 class="rtitle" data-sp>Things I've built.</h2>
-    <p class="ssub">Personal and open-source projects. Placeholders — swap links when repos are ready.</p>
-    <div class="pgrid">
+    <p class="ssub">Personal and open-source projects. Swap GitHub links when repos are ready.</p>
+    <p class="scroll-hint">← scroll to explore →</p>
+    <div class="proj-scroll">
 
-      <div class="pc fi">
-        <div class="ptop"><div class="pico">🔄</div>
-          <a href="#" class="pgh"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <div class="proj-card fi">
+        <span class="proj-emoji">🔄</span>
+        <h3>Real-time Streaming Pipeline</h3>
+        <p>End-to-end streaming with Kafka, PySpark Structured Streaming, and Delta Lake — ingestion, transformation, and serving patterns.</p>
+        <div class="proj-tags">
+          <span class="ptag">PySpark</span><span class="ptag">Kafka</span><span class="ptag">Delta Lake</span><span class="ptag">AWS</span>
+          <span class="wip">🚧 Coming Soon</span>
         </div>
-        <div class="pn">Real-time Streaming Pipeline</div>
-        <div class="pd">End-to-end streaming with Kafka, PySpark Structured Streaming, and Delta Lake — ingestion, transformation, and serving patterns.</div>
-        <div class="ptags"><span class="ptag">PySpark</span><span class="ptag">Kafka</span><span class="ptag">Delta Lake</span><span class="ptag">AWS</span><span class="wip">🚧 Coming Soon</span></div>
+        <a href="#" class="proj-link">View on GitHub →</a>
       </div>
 
-      <div class="pc fi">
-        <div class="ptop"><div class="pico">🤖</div>
-          <a href="#" class="pgh"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <div class="proj-card fi">
+        <span class="proj-emoji">🤖</span>
+        <h3>LLM Eval Framework</h3>
+        <p>Lightweight evaluation framework for testing LLM outputs in production. CI/CD integration for automated quality gates and regression detection.</p>
+        <div class="proj-tags">
+          <span class="ptag">Python</span><span class="ptag">LLMs</span><span class="ptag">MLOps</span><span class="ptag">CI/CD</span>
+          <span class="wip">🚧 Coming Soon</span>
         </div>
-        <div class="pn">LLM Eval Framework</div>
-        <div class="pd">Lightweight evaluation framework for testing LLM outputs in production. CI/CD integration for automated quality gates and regression detection.</div>
-        <div class="ptags"><span class="ptag">Python</span><span class="ptag">LLMs</span><span class="ptag">MLOps</span><span class="ptag">CI/CD</span><span class="wip">🚧 Coming Soon</span></div>
+        <a href="#" class="proj-link">View on GitHub →</a>
       </div>
 
-      <div class="pc fi">
-        <div class="ptop"><div class="pico">📊</div>
-          <a href="#" class="pgh"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+      <div class="proj-card fi">
+        <span class="proj-emoji">📊</span>
+        <h3>dbt Observability Layer</h3>
+        <p>Self-hosted observability on Elementary + dbt + CloudFront. Stakeholder-facing freshness &amp; quality monitoring — no third-party SaaS needed.</p>
+        <div class="proj-tags">
+          <span class="ptag">dbt</span><span class="ptag">Elementary</span><span class="ptag">CloudFront</span><span class="ptag">Terraform</span>
+          <span class="wip">🚧 Coming Soon</span>
         </div>
-        <div class="pn">dbt Observability Layer</div>
-        <div class="pd">Self-hosted observability on Elementary + dbt + CloudFront. Stakeholder-facing freshness &amp; quality monitoring — no third-party SaaS needed.</div>
-        <div class="ptags"><span class="ptag">dbt</span><span class="ptag">Elementary</span><span class="ptag">CloudFront</span><span class="ptag">Terraform</span><span class="wip">🚧 Coming Soon</span></div>
+        <a href="#" class="proj-link">View on GitHub →</a>
       </div>
 
     </div>
@@ -554,76 +333,14 @@
   </div>
 </section>
 
-<footer><div class="ft"><p>© 2025 Jiaru Liu</p><p>Data · AI · Systems ✦</p></div></footer>
+<footer>
+  <div class="ft">
+    <p>© 2025 Jiaru Liu</p>
+    <p>Data · AI · Systems ✦</p>
+  </div>
+</footer>
 
 <script src="assets/js/cursify-fluid-cursor.js"></script>
-<script>
-// ── Nav scroll ──
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>20),{passive:true});
-
-// ── Hero canvas ──
-const cv=document.getElementById('hcanvas'),ctx=cv.getContext('2d');
-let W,H;
-function rsz(){ W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
-rsz(); window.addEventListener('resize',rsz);
-const NN=22, ns=Array.from({length:NN},()=>({x:Math.random()*1600,y:Math.random()*900,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2.5+1.8,ph:Math.random()*Math.PI*2,w:Math.random()>.72}));
-const pks=[];
-function spk(){ const a=Math.floor(Math.random()*NN); let b=Math.floor(Math.random()*NN); if(b===a)b=(a+1)%NN; const dx=ns[a].x-ns[b].x,dy=ns[a].y-ns[b].y; if(Math.sqrt(dx*dx+dy*dy)>280)return; pks.push({a,b,t:0,sp:.005+Math.random()*.008,w:Math.random()>.65}); }
-setInterval(spk,320);
-function drw(){ ctx.clearRect(0,0,W,H); const t=performance.now()*.001,sx=W/1600,sy=H/900;
-  ns.forEach(n=>{ n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>1600)n.vx*=-1; if(n.y<0||n.y>900)n.vy*=-1; });
-  for(let i=0;i<NN;i++) for(let j=i+1;j<NN;j++){ const dx=ns[i].x-ns[j].x,dy=ns[i].y-ns[j].y,d=Math.sqrt(dx*dx+dy*dy); if(d<280){ ctx.beginPath(); ctx.moveTo(ns[i].x*sx,ns[i].y*sy); ctx.lineTo(ns[j].x*sx,ns[j].y*sy); ctx.strokeStyle=`rgba(97,89,224,${(1-d/280)*.13})`; ctx.lineWidth=1; ctx.stroke(); } }
-  for(let i=pks.length-1;i>=0;i--){ const p=pks[i]; p.t+=p.sp; if(p.t>=1){pks.splice(i,1);continue;} const na=ns[p.a],nb=ns[p.b]; const x=(na.x+(nb.x-na.x)*p.t)*sx,y=(na.y+(nb.y-na.y)*p.t)*sy,xt=(na.x+(nb.x-na.x)*Math.max(0,p.t-.07))*sx,yt=(na.y+(nb.y-na.y)*Math.max(0,p.t-.07))*sy,col=p.w?'232,148,90':'97,89,224'; ctx.beginPath();ctx.moveTo(xt,yt);ctx.lineTo(x,y);ctx.strokeStyle=`rgba(${col},.5)`;ctx.lineWidth=2;ctx.stroke(); ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fillStyle=`rgba(${col},.85)`;ctx.fill(); }
-  ns.forEach(n=>{ const pl=Math.sin(t*1.1+n.ph)*.5+.5,x=n.x*sx,y=n.y*sy,col=n.w?'232,148,90':'97,89,224'; ctx.beginPath();ctx.arc(x,y,n.r+pl*1.5,0,Math.PI*2);ctx.fillStyle=`rgba(${col},.5)`;ctx.fill(); });
-  requestAnimationFrame(drw); }
-drw();
-
-// ── Hero blob parallax ──
-const blobs=document.querySelectorAll('.hblob');
-document.addEventListener('mousemove',e=>{ const nx=(e.clientX/innerWidth-.5)*2,ny=(e.clientY/innerHeight-.5)*2; blobs.forEach(b=>{ const d=parseFloat(b.dataset.d); b.style.transform=`translate(${nx*d*18}px,${ny*d*14}px)`; }); });
-
-// ── Skills marquee build ──
-const mqItems=[
-  {l:'Python',c:'#A5A0F5'},{l:'SQL',c:'#A5A0F5'},{l:'PySpark',c:'#A5A0F5'},{l:'Bash',c:'#A5A0F5'},
-  {l:'AWS',c:'#67E8F9'},{l:'GCP',c:'#67E8F9'},{l:'Databricks',c:'#67E8F9'},{l:'Snowflake',c:'#67E8F9'},
-  {l:'Airflow',c:'#86EFAC'},{l:'dbt',c:'#86EFAC'},{l:'Kinesis',c:'#86EFAC'},{l:'Spark Streaming',c:'#86EFAC'},
-  {l:'Redshift',c:'#FDBA74'},{l:'MongoDB',c:'#FDBA74'},{l:'Delta Lake',c:'#FDBA74'},
-  {l:'Terraform',c:'#C4B5FD'},{l:'Docker',c:'#C4B5FD'},{l:'CI/CD',c:'#C4B5FD'},
-  {l:'MLOps',c:'#A5A0F5'},{l:'LLM Pipelines',c:'#A5A0F5'}
-];
-const mqt=document.getElementById('mqt');
-const mqHTML=mqItems.map(i=>`<span class="mi"><span class="midot" style="background:${i.c}"></span>${i.l}</span>`).join('');
-mqt.innerHTML=mqHTML+mqHTML; // duplicate for seamless loop
-
-// ── Reveal titles word-by-word ──
-document.querySelectorAll('.rtitle[data-sp]').forEach(el=>{
-  el.innerHTML=el.innerHTML.split(/\s+/).map(w=>`<span class="w"><span class="wi">${w}</span></span>`).join(' ');
-});
-const rtObs=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('rev'); e.target.querySelectorAll('.wi').forEach((s,i)=>s.style.transitionDelay=`${i*.08}s`); rtObs.unobserve(e.target); } }); },{threshold:.3});
-document.querySelectorAll('.rtitle[data-sp]').forEach(el=>rtObs.observe(el));
-
-// ── Fade-in ──
-const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting)e.target.classList.add('on'); }); },{threshold:.08});
-document.querySelectorAll('.fi').forEach(el=>io.observe(el));
-
-// ── 3D tilt on project cards (desktop only) ──
-const isTouch=()=>'ontouchstart' in window||navigator.maxTouchPoints>0;
-if(!isTouch()){
-  document.querySelectorAll('.pc').forEach(c=>{
-    c.addEventListener('mouseenter',()=>c.style.transition='box-shadow .2s,border-color .2s');
-    c.addEventListener('mouseleave',()=>{ c.style.transition='transform .5s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .2s'; c.style.transform=''; });
-    c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/r.width,y=(e.clientY-r.top-r.height/2)/r.height; c.style.transform=`perspective(700px) rotateY(${x*10}deg) rotateX(${-y*8}deg) translateZ(10px)`; });
-  });
-}
-
-// ── Hamburger menu ──
-const hbg=document.getElementById('hbg'), nl=document.getElementById('nlinks');
-hbg.addEventListener('click',()=>{ hbg.classList.toggle('open'); nl.classList.toggle('open'); });
-nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{ hbg.classList.remove('open'); nl.classList.remove('open'); }));
-
-// ── Disable blob parallax on touch ──
-if(isTouch()) document.querySelectorAll('.hblob').forEach(b=>b.style.transition='none');
-</script>
+<script src="assets/js/script.js"></script>
 </body>
 </html>
