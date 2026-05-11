@@ -1,4 +1,5 @@
 :HL["/web-clone-claude/_next/static/chunks/0n~vr62k1.ryj.css","style"]
 :HC["/",""]
 :HL["/web-clone-claude/images/hero/ball-texture.webp","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"w6DJ9I6eBL-MxRplwXPQs"}
+:HL["/web-clone-claude/images/hero/name.png","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"z89bFwebH-GK9r5zJQS83"}
